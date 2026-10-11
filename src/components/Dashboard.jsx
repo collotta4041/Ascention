@@ -121,13 +121,13 @@ function QuestList() {
   )
 }
 
-function WorkoutCategories() {
+function WorkoutCategories({ onNavigateWorkouts }) {
   return (
     <section className="workout-section" id="workouts">
-      <div className="section-heading section-heading--workouts"><div><p className="section-kicker">Pick your next session</p><h2>Train Your Way</h2></div><button className="text-button" type="button">View all <Icon name="arrow" size={16} /></button></div>
+      <div className="section-heading section-heading--workouts"><div><p className="section-kicker">Pick your next session</p><h2>Train Your Way</h2></div><button className="text-button" type="button" onClick={onNavigateWorkouts}>View all <Icon name="arrow" size={16} /></button></div>
       <div className="workout-grid">
         {workouts.map((workout) => (
-          <button className={`workout-card workout-card--${workout.accent}`} key={workout.name} type="button">
+          <button className={`workout-card workout-card--${workout.accent}`} key={workout.name} type="button" onClick={onNavigateWorkouts}>
             <span className="workout-card__icon"><Icon name={workout.icon} size={23} /></span>
             <span className="workout-card__content"><strong>{workout.name}</strong><small>{workout.description}</small></span>
             <Icon name="arrow" size={17} />
@@ -172,9 +172,14 @@ function LatestAchievement() {
   )
 }
 
-export default function Dashboard({ onSignOut }) {
+export default function Dashboard({ onSignOut, onNavigateWorkouts }) {
   const [activeSection, setActiveSection] = useState('Home')
   const navigate = (section) => {
+    if (section === 'Workouts') {
+      onNavigateWorkouts()
+      return
+    }
+
     setActiveSection(section)
     const target = section === 'Home' ? 'home' : section.toLowerCase()
     document.getElementById(target)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -190,7 +195,7 @@ export default function Dashboard({ onSignOut }) {
         </section>
         <section className="dashboard-overview" aria-label="Current progress overview"><RankCard /><StreakCard /></section>
         <QuestList />
-        <WorkoutCategories />
+        <WorkoutCategories onNavigateWorkouts={onNavigateWorkouts} />
         <section className="dashboard-lower-grid"><RankProgress /><div className="dashboard-lower-grid__side"><WeeklyActivity /><LatestAchievement /></div></section>
       </main>
     </div>
